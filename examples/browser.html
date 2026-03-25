@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>FreJun OAuth - Browser Example</title>
+</head>
+<body>
+  <button id="login">Login with FreJun</button>
+  <pre id="output"></pre>
+
+  <script type="module">
+    import { FrejunOAuth } from '../dist/esm/index.js';
+    import { FREJUN_CLIENT_ID, FREJUN_CLIENT_SECRET } from './env.js';
+
+    // Set these via your bundler's env plugin (e.g. Vite, Webpack DefinePlugin)
+    const oauth = new FrejunOAuth({
+      clientId: FREJUN_CLIENT_ID,
+      clientSecret: FREJUN_CLIENT_SECRET,
+    });
+
+    const out = document.getElementById('output');
+    const log = (msg) => (out.textContent += msg + '\n');
+
+    oauth.on('authCode', (data) => {
+      log(`Auth code: ${data.code} - received for ${data.email}`);
+    });
+
+    oauth.on('tokens', (data) => {
+      log(`Access token: ${data.access_token}`);
+      log(`Refresh token: ${data.refresh_token}`);
+      log(`Expires in: ${data.expires_in}s`);
+    });
+
+    oauth.on('tokensRefreshed', (data) => {
+      log(`Refreshed access token: ${data.access_token}`);
+    });
+
+    oauth.on('error', (err) => {
+      log(`Error: ${err.message}`);
+    });
+
+    document.getElementById('login').addEventListener('click', () => {
+      oauth.openAuthPopup();
+    });
+  </script>
+</body>
+</html>

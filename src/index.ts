@@ -1,4 +1,4 @@
-export { FrejunOAuth } from './FrejunOAuth';
+export { FrejunOAuth } from './FrejunOAuth.js';
 
 export type {
   FrejunOAuthConfig,
@@ -7,6 +7,6 @@ export type {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
-} from './types';
+} from './types.js';
 
-export { FrejunApiError } from './types';
+export { FrejunApiError } from './types.js';

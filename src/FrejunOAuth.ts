@@ -5,8 +5,8 @@ import {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
-} from './types';
-import * as api from './api';
+} from './types.js';
+import * as api from './api.js';
 
 const AUTHORIZATION_URL = 'https://product.frejun.com/oauth/authorize/';
 const EXPECTED_ORIGIN = 'https://product.frejun.com';

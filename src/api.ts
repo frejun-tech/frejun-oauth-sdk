@@ -3,7 +3,7 @@ import {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
-} from './types';
+} from './types.js';
 
 const BASE_URL = 'https://api.frejun.com/api/v2';
 
