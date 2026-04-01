@@ -34,7 +34,7 @@
   "author": "Irfan Wani <irfan@frejun.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/frejun-tech/frejun-oauth-sdk.git"
+    "url": "git+https://github.com/frejun-tech/frejun-oauth-sdk.git"
   },
   "bugs": {
     "url": "https://github.com/frejun-tech/frejun-oauth-sdk/issues"
