@@ -31,6 +31,15 @@
     "tokens"
   ],
   "license": "MIT",
+  "author": "Irfan Wani <irfan@frejun.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frejun-tech/frejun-oauth-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frejun-tech/frejun-oauth-sdk/issues"
+  },
+  "homepage": "https://github.com/frejun-tech/frejun-oauth-sdk#readme",
   "devDependencies": {
     "@types/node": "^25.5.0",
     "rimraf": "^5.0.0",
