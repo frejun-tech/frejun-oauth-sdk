@@ -60,6 +60,7 @@ oauth.openAuthPopup();
 - **`createTokens(code)`** — Exchange an auth code for tokens. Emits `'tokens'`.
 - **`refreshTokens(refreshToken)`** — Refresh an expired access token. Emits `'tokensRefreshed'`.
 - **`verifyToken(token)`** — Check whether an access or refresh token is valid.
+- **`disconnect(refreshToken)`** — Disconnect the OAuth app from the organization. Revokes all tokens for this organization.
 - **`destroy()`** — Clean up all listeners and close any open popup.
 
 ### Events

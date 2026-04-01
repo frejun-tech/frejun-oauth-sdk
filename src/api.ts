@@ -3,6 +3,7 @@ import {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
+  DisconnectResponse,
 } from './types.js';
 
 const BASE_URL = 'https://api.frejun.com/api/v2';
@@ -89,4 +90,25 @@ export async function verifyToken(token: string): Promise<VerifyTokenResponse> {
     body: JSON.stringify({ token }),
   });
   return handleResponse<VerifyTokenResponse>(response);
+}
+
+/**
+ * Disconnect the OAuth app from the org associated with the refresh token.
+ * `POST /oauth/disconnect-oauth-app/`
+ */
+export async function disconnect(
+  clientId: string,
+  clientSecret: string,
+  refreshToken: string,
+): Promise<DisconnectResponse> {
+  const credentials = encodeCredentials(clientId, clientSecret);
+  const response = await fetch(`${BASE_URL}/oauth/disconnect-oauth-app/`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${credentials}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ refresh: refreshToken }),
+  });
+  return handleResponse<DisconnectResponse>(response);
 }

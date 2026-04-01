@@ -5,6 +5,7 @@ import {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
+  DisconnectResponse,
 } from './types.js';
 import * as api from './api.js';
 
@@ -146,6 +147,18 @@ export class FrejunOAuth {
   /** Verify whether a token (access or refresh) is still valid. */
   async verifyToken(token: string): Promise<VerifyTokenResponse> {
     return api.verifyToken(token);
+  }
+
+  /**
+   * Disconnect the OAuth app from the organization.
+   * Revokes all refresh tokens for this client and org, and removes the app-org link.
+   */
+  async disconnect(refreshToken: string): Promise<DisconnectResponse> {
+    return api.disconnect(
+      this.config.clientId,
+      this.config.clientSecret,
+      refreshToken,
+    );
   }
 
   // ---------------------------------------------------------------------------

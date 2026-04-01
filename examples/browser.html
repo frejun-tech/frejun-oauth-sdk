@@ -6,6 +6,7 @@
 </head>
 <body>
   <button id="login" style="color: white; background-color: rgb(52, 203, 101); border: none; padding: 10px; border-radius: 10px;">Login with FreJun</button>
+  <button id="logout" style="color: white; background-color: rgb(220, 20, 60); border: none; padding: 10px; border-radius: 10px;">Disconnect FreJun</button>
   <pre id="output"></pre>
 
   <script type="module">
@@ -18,6 +19,8 @@
       clientSecret: FREJUN_CLIENT_SECRET,
     });
 
+    let tokens = {};
+
     const out = document.getElementById('output');
     const log = (msg) => (out.textContent += msg + '\n');
 
@@ -29,6 +32,7 @@
       log(`Access token: ${data.access_token}`);
       log(`Refresh token: ${data.refresh_token}`);
       log(`Expires in: ${data.expires_in}s`);
+      tokens = data; // Store tokens for later use (e.g. refresh or disconnect)
     });
 
     oauth.on('tokensRefreshed', (data) => {
@@ -41,6 +45,10 @@
 
     document.getElementById('login').addEventListener('click', () => {
       oauth.openAuthPopup();
+    });
+    document.getElementById('logout').addEventListener('click', () => {
+      oauth.disconnect(tokens.refresh_token);
+      log('Disconnected from FreJun');
     });
   </script>
 </body>

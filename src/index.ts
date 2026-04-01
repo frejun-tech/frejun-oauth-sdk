@@ -7,6 +7,7 @@ export type {
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
+  DisconnectResponse,
 } from './types.js';
 
 export { FrejunApiError } from './types.js';

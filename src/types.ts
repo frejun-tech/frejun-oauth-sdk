@@ -38,6 +38,12 @@ export interface VerifyTokenResponse {
   [key: string]: unknown;
 }
 
+/** Response from `POST /oauth/disconnect-oauth-app/`. */
+export interface DisconnectResponse {
+  success: boolean;
+  message: string;
+}
+
 /** Data received via the postMessage / redirect after user authorization. */
 export interface AuthCodeData {
   code: string;
