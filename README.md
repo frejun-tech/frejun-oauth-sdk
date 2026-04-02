@@ -56,7 +56,7 @@ oauth.openAuthPopup();
 ### Methods
 
 - **`getAuthorizationUrl()`** — Returns the FreJun authorization URL as a string.
-- **`openAuthPopup()`** — Opens the consent page in a popup, listens for the auth code via `postMessage`, and automatically exchanges it for tokens. Browser only.
+- **`openAuthPopup(options?)`** — Opens the consent page in a popup, listens for the auth code via `postMessage`. By default, automatically exchanges the code for tokens. Pass `{ generateTokens: false }` to skip token generation (useful when tokens are generated on your backend). Browser only.
 - **`createTokens(code)`** — Exchange an auth code for tokens. Emits `'tokens'`.
 - **`refreshTokens(refreshToken)`** — Refresh an expired access token. Emits `'tokensRefreshed'`.
 - **`verifyToken(token)`** — Check whether an access or refresh token is valid.
@@ -103,6 +103,23 @@ const handler = (data) => { /* ... */ };
 oauth.on('tokens', handler);
 // Later, unsubscribe
 oauth.off('tokens', handler);
+```
+
+## Backend Token Generation
+
+If you need to generate tokens on your server instead of the browser, disable automatic token exchange and listen for the `authCode` event:
+
+```ts
+oauth.on('authCode', async ({ code, email, ...params }) => {
+  // Send the code to your backend for token generation
+  await fetch('/api/auth/frejun', { // your backend endpoint
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code, email, ...params }),
+  });
+});
+
+oauth.openAuthPopup({ generateTokens: false });
 ```
 
 ## Notes

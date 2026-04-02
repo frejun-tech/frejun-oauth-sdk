@@ -3,6 +3,7 @@ export { FrejunOAuth } from './FrejunOAuth.js';
 export type {
   FrejunOAuthConfig,
   FrejunOAuthEvents,
+  OpenAuthPopupOptions,
   AuthCodeData,
   CreateTokenResponse,
   RefreshTokenResponse,

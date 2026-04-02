@@ -2,6 +2,7 @@ import {
   FrejunOAuthConfig,
   FrejunOAuthEvents,
   AuthCodeData,
+  OpenAuthPopupOptions,
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
@@ -70,9 +71,15 @@ export class FrejunOAuth {
    * Open the FreJun consent page in a popup and listen for the authorization
    * code via `window.postMessage`.
    *
+   * @param options.generateTokens — When `true` (default), automatically exchanges
+   *   the auth code for tokens. Set to `false` when token generation happens on
+   *   your backend — listen for the `'codeReceived'` event to get the code.
+   *
    * **Browser-only** — throws in non-browser environments.
    */
-  openAuthPopup(): void {
+  openAuthPopup(options: OpenAuthPopupOptions = {}): void {
+    const { generateTokens = true } = options;
+
     if (typeof window === 'undefined') {
       throw new Error('openAuthPopup() is only available in browser environments');
     }
@@ -109,10 +116,12 @@ export class FrejunOAuth {
       const authCodeData: AuthCodeData = { code, email, ...otherParams };
       this.emit('authCode', authCodeData);
 
-      // Automatically exchange the code for tokens
-      this.createTokens(code).catch((err: unknown) => {
-        this.emit('error', err instanceof Error ? err : new Error(String(err)));
-      });
+      if (generateTokens) {
+        // Automatically exchange the code for tokens
+        this.createTokens(code).catch((err: unknown) => {
+          this.emit('error', err instanceof Error ? err : new Error(String(err)));
+        });
+      }
     };
 
     window.addEventListener('message', this.messageHandler);

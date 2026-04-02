@@ -51,6 +51,15 @@ export interface AuthCodeData {
   [key: string]: string;
 }
 
+/** Options for `openAuthPopup()`. */
+export interface OpenAuthPopupOptions {
+  /**
+   * When `true` (default), the SDK automatically exchanges the auth code for tokens.
+   * Set to `false` when tokens should be generated on the backend instead.
+   */
+  generateTokens?: boolean;
+}
+
 /** Typed event map for the FrejunOAuth event emitter. */
 export interface FrejunOAuthEvents {
   /** Fired when an authorization code is received from the popup. */
