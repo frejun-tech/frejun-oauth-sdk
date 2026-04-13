@@ -55,13 +55,66 @@ oauth.openAuthPopup();
 
 ### Methods
 
-- **`getAuthorizationUrl()`** — Returns the FreJun authorization URL as a string.
-- **`openAuthPopup(options?)`** — Opens the consent page in a popup, listens for the auth code via `postMessage`. By default, automatically exchanges the code for tokens. Pass `{ generateTokens: false }` to skip token generation (useful when tokens are generated on your backend). Browser only.
-- **`createTokens(code)`** — Exchange an auth code for tokens. Emits `'tokens'`.
-- **`refreshTokens(refreshToken)`** — Refresh an expired access token. Emits `'tokensRefreshed'`.
-- **`verifyToken(token)`** — Check whether an access or refresh token is valid.
-- **`disconnect(refreshToken)`** — Disconnect the OAuth app from the organization. Revokes all tokens for this organization.
-- **`destroy()`** — Clean up all listeners and close any open popup.
+#### `getAuthorizationUrl()`
+Returns the FreJun authorization URL as a `string`.
+
+#### `openAuthPopup(options?)`
+Opens the consent page in a popup and listens for the auth code via `postMessage`. By default, automatically exchanges the code for tokens. Pass `{ generateTokens: false }` to skip token generation (useful when tokens are generated on your backend). Browser only.
+
+#### `createTokens(code)`
+Exchange an auth code for tokens. Emits `'tokens'`. Returns:
+```ts
+{
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;       // seconds
+  token_type: string;
+  org_identifier: string;
+  // On error: statusCode is also included
+  statusCode?: number;
+}
+```
+
+#### `refreshTokens(refreshToken)`
+Refresh an expired access token. Emits `'tokensRefreshed'`. Returns:
+```ts
+{
+  success: boolean;
+  message: string;
+  access_token: string;
+  refresh_token: string;
+  expires_in: number;       // seconds
+  org_identifier: string;
+  // On error: statusCode is also included
+  statusCode?: number;
+}
+```
+
+#### `verifyToken(token)`
+Check whether an access or refresh token is valid. Returns:
+```ts
+// Valid token
+{ is_valid: true }
+
+// Invalid token or API error
+{ is_valid: false; statusCode?: number; [key: string]: unknown }
+```
+
+#### `disconnect(refreshToken)`
+Disconnect the OAuth app from the organization. Revokes all tokens for this organization. Returns:
+```ts
+{
+  success: boolean;
+  message: string;
+  // On error: statusCode is also included
+  statusCode?: number;
+}
+```
+
+#### `destroy()`
+Clean up all listeners and close any open popup.
 
 ### Events
 
@@ -121,6 +174,28 @@ oauth.on('authCode', async ({ code, email, ...params }) => {
 
 oauth.openAuthPopup({ generateTokens: false });
 ```
+
+## Error Handling
+
+API calls **never throw** for HTTP-level errors. Instead, all functions return an error object containing the API's response body merged with a `statusCode` field. You can detect failures by checking a `success` field (present on most endpoints) or `is_valid` for `verifyToken`.
+
+```ts
+const result = await oauth.verifyToken(token);
+if (result.is_valid) {
+  // token is valid
+} else {
+  // result contains { is_valid: false, statusCode, ...apiErrorFields }
+  console.error('Invalid token:', result);
+}
+
+const tokens = await oauth.createTokens(code);
+if (!tokens.success) {
+  // tokens contains { success: false, statusCode, message, ...apiErrorFields }
+  console.error('Token creation failed:', tokens.message);
+}
+```
+
+Only network-level failures (e.g. no internet connection) will result in a thrown error or an emitted `'error'` event.
 
 ## Notes
 

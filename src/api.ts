@@ -1,5 +1,4 @@
 import {
-  FrejunApiError,
   CreateTokenResponse,
   RefreshTokenResponse,
   VerifyTokenResponse,
@@ -18,15 +17,14 @@ function encodeCredentials(clientId: string, clientSecret: string): string {
   return Buffer.from(raw).toString('base64');
 }
 
-/** Parse a JSON response body; throw FrejunApiError on non-2xx status. */
+/** Parse a JSON response body; returns body on success or an error object on non-2xx (never throws). */
 async function handleResponse<T>(response: Response): Promise<T> {
-  const body = await response.json().catch(() => null);
+  const body = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new FrejunApiError(
-      `FreJun API error: ${response.status} ${response.statusText}`,
-      response.status,
-      body,
-    );
+    return {
+      ...body,
+      statusCode: response.status,
+    } as unknown as T;
   }
   return body as T;
 }
@@ -84,12 +82,19 @@ export async function refreshTokens(
  * `POST /oauth/verify-token/`  (no Authorization header required)
  */
 export async function verifyToken(token: string): Promise<VerifyTokenResponse> {
-  const response = await fetch(`${BASE_URL}/oauth/verify-token/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ token }),
-  });
-  return handleResponse<VerifyTokenResponse>(response);
+  try {
+    const response = await fetch(`${BASE_URL}/oauth/verify-token/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    });
+    const result = await handleResponse<Record<string, unknown>>(response);
+    if (response.ok) return { is_valid: true };
+    return { is_valid: false, ...result };
+  } catch (err: any) {
+    console.log(err);
+    return { is_valid: false };
+  }
 }
 
 /**
