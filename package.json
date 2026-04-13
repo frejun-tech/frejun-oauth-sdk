@@ -1,6 +1,6 @@
 {
   "name": "@frejun/oauth",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "FreJun OAuth 2.0 SDK — browser popup flow, token management, and event-driven token notifications",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
